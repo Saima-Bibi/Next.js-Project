@@ -1,10 +1,22 @@
-import React,{useState} from 'react'
+import React,{useEffect, useState} from 'react'
 import Link from 'next/link'
 import {useRouter} from 'next/navigation'
+import axios from 'axios'
 
 export default function Feedback() {
  const[name,setName]= useState('Salma')
+ const[apps,setApp]= useState([])
  const router = useRouter()
+
+ const getData = async() =>{
+ axios.get('/api/feedback')
+      .then((res) => setApp(res.data.data))
+      .catch((err) => console.error('Failed to fetch apps:', err));
+ }
+
+ useEffect(()=>{
+  getData()
+ },[])
 
   
   return (
@@ -24,11 +36,13 @@ export default function Feedback() {
 
     <fieldset className="mb-2">
  
-  <select defaultValue="Pick an app" className="select ml-16">
+  
+    <select defaultValue="Pick an app" className="select ml-16">
     <option disabled={true}>Pick an app</option>
-    <option>Whatsapp</option>
-    <option>Facebook</option>
-    <option>LinkedIn</option>
+    {apps.map((app)=>(
+      <option key={app._id} value={app.name}>{app.name}</option>
+    ))}
+    
   </select>
 
 </fieldset>
