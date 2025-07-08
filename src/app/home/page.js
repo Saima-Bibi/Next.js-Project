@@ -1,6 +1,7 @@
 
 import Link from 'next/link'
 import React from 'react'
+import Script from 'next/script'
 
 export default function Home() {
   return (
@@ -8,6 +9,7 @@ export default function Home() {
       <h1>Home Page</h1>
       <Link href={'/home/post'}>go to posts</Link>
       <Link href={'/home/notification'}>  go to notifications</Link>
+     
     </div>
   )
 }
