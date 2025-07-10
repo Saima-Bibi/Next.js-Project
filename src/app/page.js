@@ -8,7 +8,7 @@ export default function Home() {
   return (
     <div className={styles.page}>
       <main className={styles.main}>
-      
+      <Link href={'/dashboard'}>View Feedbacks</Link>
       <Feedback/>
         {/* <Link href='/home'>Go to home</Link> */}
       </main>

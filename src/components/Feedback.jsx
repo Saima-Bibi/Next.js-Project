@@ -14,7 +14,7 @@ export default function Feedback() {
  const router = useRouter()
 
  const getData = async() =>{
- axios.get('/api/feedback')
+ axios.get('/api/feedback?type=getApps')
       .then((res) => setApp(res.data.appData))
       .catch((err) => console.error('Failed to fetch apps:', err));
  }
@@ -61,7 +61,20 @@ export default function Feedback() {
      <h1 className="text-5xl font-bold underline">
       Hello world!
     </h1> */}
-    <button className="btn" onClick={()=>document.getElementById('my_modal_1').showModal()}>Give Feedback</button>
+ <button
+  className="btn btn-info fixed bottom-6 right-6 z-50 shadow-lg animate-bounce"
+  onClick={() => document.getElementById('my_modal_1').showModal()}
+>
+   <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7" fill="none"
+    viewBox="0 0 24 24" stroke="white" strokeWidth={2}>
+    <path strokeLinecap="round" strokeLinejoin="round"
+      d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2
+      2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4
+      4z" />
+  </svg>
+
+</button>
+
 <dialog id="my_modal_1" className="modal">
   <div className="modal-box">
     <h3 className="font-bold text-lg text-center">Hello!</h3>
@@ -88,7 +101,7 @@ export default function Feedback() {
         {/* if there is a button in form, it will close the modal */}
         <button className="btn">Close</button>
       </form>
-      <button className="btn" onClick={handleSubmit}>Submit</button>
+      <button className="btn btn-info" onClick={handleSubmit}>Submit</button>
     </div>
   </div>
 </dialog>

@@ -1,5 +1,6 @@
 import dbConnection from "@/lib/db_connection";
 import appModel from "@/model/apps";
+import userModel from "@/model/user";
 import feedbackModel from "@/model/feedback";
 import { NextResponse } from "next/server";
 
@@ -7,8 +8,28 @@ import { NextResponse } from "next/server";
 export async function GET(req){
     try {
         await dbConnection()
-    const appData = await appModel.find();
+
+        const {searchParams} = new URL(req.url)
+        
+        const type = searchParams.get('type')
+       
+
+        if (type === 'getApps'){
+            const appData = await appModel.find();
     return NextResponse.json({message:'Fetching App data', appData})
+        }
+
+        if(type === 'getFeedbacks'){
+            const feedbacks = await feedbackModel.find().populate([
+               { path:'appId', select:'name'},
+               {path:'userId', select:'name'}
+
+            ])
+            console.log('feedbacks',feedbacks)
+            return NextResponse.json({message:'Fetching Feedback data', feedbacks})
+        }
+
+    return NextResponse.json({message:'Invalid Type'}, {status:400})
 
     } catch (error) {
         console.log(error.message)
@@ -32,3 +53,4 @@ export async function POST(req){
          return NextResponse.json({message:'Internal Server Error'}, {status: 500})
     }
 }
+
