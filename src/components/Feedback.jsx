@@ -1,3 +1,4 @@
+'use client'
 import React,{useEffect, useState} from 'react'
 import Link from 'next/link'
 import {useRouter} from 'next/navigation'
@@ -62,7 +63,7 @@ export default function Feedback() {
       Hello world!
     </h1> */}
  <button
-  className="btn btn-info fixed bottom-6 right-6 z-50 shadow-lg animate-bounce"
+  className=" btn  rounded-xl bg-blue-950  fixed bottom-6 right-6 z-50 shadow-lg animate-bounce"
   onClick={() => document.getElementById('my_modal_1').showModal()}
 >
    <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7" fill="none"
@@ -101,7 +102,7 @@ export default function Feedback() {
         {/* if there is a button in form, it will close the modal */}
         <button className="btn">Close</button>
       </form>
-      <button className="btn btn-info" onClick={handleSubmit}>Submit</button>
+      <button className="btn bg-blue-950 text-white" onClick={handleSubmit}>Submit</button>
     </div>
   </div>
 </dialog>

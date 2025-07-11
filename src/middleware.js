@@ -8,5 +8,5 @@ export  function middleware(req){
      return NextResponse.redirect(new URL('/login',req.url))
 }
 export const config = {
-    matcher:'/home:path*'
+    matcher:'/ssg:path*'
 }

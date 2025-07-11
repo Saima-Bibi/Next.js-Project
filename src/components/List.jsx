@@ -50,7 +50,9 @@ getFeedbacks()
         <td>{feed.feedback}</td>
         <td>{feed.userId.name}</td>
          <td>{feed.status}</td>
-         <td>{<button className="btn btn-info" onClick={()=>updateFeedbacks(feed._id)}>Done</button>}</td>
+         <td>{<button className="btn bg-blue-950 text-white" onClick={()=>updateFeedbacks(feed._id)}
+         disabled={ feed.status === 'Done'}
+         >Done</button>}</td>
       </tr>
         ))
       }
