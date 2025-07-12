@@ -29,6 +29,57 @@ export async function GET(req){
             return NextResponse.json({message:'Fetching Feedback data', feedbacks})
         }
 
+        if(type === 'getStatusCount'){
+           const status =  await feedbackModel.aggregate([
+            {
+                $group: {
+                    _id:'$status',
+                    count: {$sum:1}
+                }
+            },{
+                $project:{
+                    name: '$_id',
+                    count:1
+                }
+            }
+           ])
+
+             console.log('status',status)
+            return NextResponse.json({message:'Fetching status data', status})
+        }
+
+
+        if(type === 'getFeedCountPerApp'){
+            const feed = await feedbackModel.aggregate([
+                {
+                    $group:{
+                        _id:'$appId',
+                        count: {$sum:1}
+                    }
+                },
+                {
+                    $lookup:{
+                        from: 'apps',
+                        localField:'_id',
+                        foreignField:'_id',
+                        as:'app'
+                    }
+                },
+                {$unwind:'$app'}, // will give obj insted of array
+
+                {
+                    $project:{
+                        
+                        name:'$app.name',
+                        count:1
+                    }
+                }
+            ])
+             console.log('feed here',feed)
+            return NextResponse.json({message:'Getting Count Feedback Per App', feed})
+            
+        }
+
     return NextResponse.json({message:'Invalid Type'}, {status:400})
 
     } catch (error) {

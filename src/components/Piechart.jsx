@@ -1,14 +1,29 @@
 'use client'
-import React from 'react'
+import axios from 'axios';
+import React ,{useState,useEffect} from 'react'
 import { Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 
 export default function Piechart() {
  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8', '#82CA9D'];
-const data = [
-  { name: 'Initiated', value: 400 },
-  { name: 'Done', value: 300 },
+// const data = [
+//   { name: 'Initiated', value: 400 },
+//   { name: 'Done', value: 300 },
 
-];
+// ];
+
+
+const[data, setData] = useState([])
+
+   const getData = async() =>{
+   axios.get('/api/feedback?type=getStatusCount')
+        .then((res) => setData(res.data.status))
+        .catch((err) => console.error('Failed to fetch count:', err));
+   }
+
+   useEffect(()=>{
+    getData()
+   },[])
+
 
 
 const hasData = Array.isArray(data) && data.length > 0;
@@ -42,7 +57,7 @@ if (!hasData) {
             labelLine={true}
             outerRadius={90}
             fill="#8884d8"
-            dataKey="value"
+            dataKey="count"
             nameKey="name"
             label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
           >

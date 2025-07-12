@@ -1,42 +1,55 @@
 "use client"
 
-import React from 'react'
+import axios from 'axios';
+import React, { useState , useEffect} from 'react'
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
 } from 'recharts'
 
 export default function Barchart() {
 
-const data = [
-  {
-    name: 'WhatsApp',
-    count: 10,
-  },
-  {
-    name: 'Facebook',
-    count: 5,
-  },
-  {
-    name: 'LinkedIn',
-    count: 8,
-  },
-  {
-    name: 'Instagram',
-    count: 6,
-  },
-  {
-    name: 'Snapchat',
-    count: 3,
-  },
-   {
-    name: 'Instagram',
-    count: 6,
-  },
-  {
-    name: 'Snapchat',
-    count: 3,
-  },
-];
+const[data, setData] = useState([])
+
+   const getData = async() =>{
+   axios.get('/api/feedback?type=getFeedCountPerApp')
+        .then((res) => setData(res.data.feed))
+        .catch((err) => console.error('Failed to fetch count:', err));
+   }
+
+   useEffect(()=>{
+    getData()
+   },[])
+
+// const data = [
+//   {
+//     name: 'WhatsApp',
+//     count: 10,
+//   },
+//   {
+//     name: 'Facebook',
+//     count: 5,
+//   },
+//   {
+//     name: 'LinkedIn',
+//     count: 8,
+//   },
+//   {
+//     name: 'Instagram',
+//     count: 6,
+//   },
+//   {
+//     name: 'Snapchat',
+//     count: 3,
+//   },
+//    {
+//     name: 'Instagram',
+//     count: 6,
+//   },
+//   {
+//     name: 'Snapchat',
+//     count: 3,
+//   },
+// ];
 
 
   return (

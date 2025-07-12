@@ -3,7 +3,7 @@ import Link from 'next/link'
 import React from 'react'
 import Script from 'next/script'
 import Feedback from '@/components/Feedback'
-import Dashboard from '../dashboard/page'
+import Dashboard from '../home/dashboard/page'
 
 export default function Home() {
   return (
