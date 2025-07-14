@@ -3,12 +3,16 @@ import React,{useState,useEffect} from 'react'
 import axios from 'axios'
 
 export default function List() {
+const[allFeedbacks ,setAllFeedbacks]= useState([])  
 const[feedbacks ,setFeedbacks]= useState([])
+const[filterType,setFilterType] = useState('')
 let counter = 1
     
     const getFeedbacks = async() =>{
  await axios.get('/api/feedback?type=getFeedbacks')
-      .then((res) => {setFeedbacks(res.data.feedbacks)
+      .then((res) => {
+        setAllFeedbacks(res.data.feedbacks)
+        setFeedbacks(res.data.feedbacks)
        
       })
       .catch((err) => console.error('Failed to fetch apps:', err));
@@ -25,8 +29,33 @@ await axios.patch(`/api/feedback/${id}?type=updateFeedabackStatus`)
  useEffect(()=>{
 getFeedbacks()
  },[])
+
+const applyFilter = (status) => {
+  setFilterType(status);
+  const filtered = allFeedbacks.filter(feed => feed.status === status);
+  console.log('allFeedbacks',allFeedbacks)
+  setFeedbacks(filtered);
+};
+
+const reset = ()=>{
+  setFilterType(null)
+  setFeedbacks(allFeedbacks)
+}
+
+
+ 
   return (
     <div>
+      <div className=' flex justify-end pr-4 mt-5 mb-5'>
+        <div className='space-x-1'>
+         <button className={`btn ${filterType === 'Initiated' ? 'bg-blue-950 text-white text-bold' : 'border-blue-950 bg-white text-blue-950'}`} onClick={()=>applyFilter('Initiated')}>Initiated</button>
+      <button  className={`btn ${filterType === 'Done' ? 'bg-blue-950 text-white text-bold' : 'border-blue-950 bg-white text-blue-950'}`} onClick={()=>applyFilter('Done')}>Done</button>
+             <button  className={`btn ${filterType === null ? 'bg-blue-950 text-white text-bold' : 'border-blue-950 bg-white text-blue-950'}`} onClick={reset}>Reset</button>
+
+       </div>
+      
+      </div>
+     
       <div className="overflow-x-auto rounded-box border border-base-content/5 bg-base-100 ">
   <table className="table">
    

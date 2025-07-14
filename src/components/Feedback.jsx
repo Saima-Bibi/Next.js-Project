@@ -66,13 +66,8 @@ export default function Feedback() {
   className=" btn  rounded-xl bg-blue-950  fixed bottom-6 right-6 z-50 shadow-lg animate-bounce"
   onClick={() => document.getElementById('my_modal_1').showModal()}
 >
-   <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7" fill="none"
-    viewBox="0 0 24 24" stroke="white" strokeWidth={2}>
-    <path strokeLinecap="round" strokeLinejoin="round"
-      d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2
-      2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4
-      4z" />
-  </svg>
+   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-message-square-plus-icon lucide-message-square-plus"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M12 7v6"/><path d="M9 10h6"/></svg>
+
 
 </button>
 
