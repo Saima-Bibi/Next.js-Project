@@ -3,6 +3,7 @@ import React,{useEffect, useState} from 'react'
 import Link from 'next/link'
 import {useRouter} from 'next/navigation'
 import axios from 'axios'
+import {toast} from 'react-hot-toast'
 
 export default function Feedback() {
  const[name,setName]= useState('Salma')
@@ -31,17 +32,21 @@ export default function Feedback() {
   e.preventDefault()
   try {
      if (!data.appId || !data.feedback) {
-    alert("Please select an app and write feedback.");
+    // alert("Please select an app and write feedback.");
+   
+    toast.error('Please select an app and write feedback')
+    
     return;
   }
   const res = await axios.post('/api/feedback', data);
-    alert(res?.data?.message);
+   
+    toast.success(res?.data?.message)
    setData({
       appId: '',
       feedback: '',
       userId: '686a82245315f301a5d276c6'
     });
-    
+     document.getElementById('my_modal_1').close()
   } catch (error) {
     console.error('Failed to submit feedback',error)
   }
