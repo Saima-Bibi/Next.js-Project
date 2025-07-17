@@ -2,6 +2,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Sidebar from "@/components/Sidebar";
 import { Toaster } from "react-hot-toast";
+import { Providers } from "./reduxToolkit/provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,6 +26,9 @@ export default function RootLayout({ children }) {
         {/* <h1>Practicing Next.js(common layout)</h1> */}
          {/* <Sidebar></Sidebar> */}
          <Toaster position="top-center"></Toaster>
+         {/* <Providers>
+            {children}
+         </Providers> */}
         {children}
       </body>
     </html>
