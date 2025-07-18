@@ -26,10 +26,10 @@ export default function RootLayout({ children }) {
         {/* <h1>Practicing Next.js(common layout)</h1> */}
          {/* <Sidebar></Sidebar> */}
          <Toaster position="top-center"></Toaster>
-         {/* <Providers>
+         <Providers>
             {children}
-         </Providers> */}
-        {children}
+         </Providers>
+        {/* {children} */}
       </body>
     </html>
   );

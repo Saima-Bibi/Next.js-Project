@@ -25,7 +25,7 @@ export async function GET(req){
                {path:'userId', select:'name'}
 
             ])
-            console.log('feedbacks',feedbacks)
+            // console.log('feedbacks',feedbacks)
             return NextResponse.json({message:'Fetching Feedback data', feedbacks})
         }
 

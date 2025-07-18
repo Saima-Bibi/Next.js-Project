@@ -1,13 +1,21 @@
 'use client'
 import React,{useState,useEffect} from 'react'
 import axios from 'axios'
+import { useDispatch, useSelector } from 'react-redux'
+import { fetchFeedbacks } from '@/app/reduxToolkit/slice'
 
 export default function List() {
+
+  const data = useSelector(state=> state?.feedbacks?.data)
+  const load = useSelector(state=> state?.feedbacks?.loading)
+  const dispatch = useDispatch()
 const[allFeedbacks ,setAllFeedbacks]= useState([])  
 const[feedbacks ,setFeedbacks]= useState([])
 const[filterType,setFilterType] = useState('')
 let counter = 1
     
+
+console.log('data', data)
     const getFeedbacks = async() =>{
  await axios.get('/api/feedback?type=getFeedbacks')
       .then((res) => {
@@ -26,9 +34,25 @@ await axios.patch(`/api/feedback/${id}?type=updateFeedabackStatus`)
       .catch((err) => console.error('Failed to fetch apps:', err));
  }
 
- useEffect(()=>{
-getFeedbacks()
- },[])
+//  useEffect(()=>{
+// getFeedbacks()
+//  },[])
+
+useEffect(() => {
+    dispatch(fetchFeedbacks());
+    if(data){
+       setAllFeedbacks(data)
+        setFeedbacks(data)
+    }
+  }, [dispatch]);
+
+  useEffect(() => {
+  
+    if(data){
+       setAllFeedbacks(data)
+        setFeedbacks(data)
+    }
+  }, [data]);
 
 const applyFilter = (status) => {
   setFilterType(status);
@@ -57,7 +81,7 @@ const reset = ()=>{
       </div>
      
       <div className="overflow-x-auto rounded-box border border-base-content/5 bg-base-100 ">
-  <table className="table">
+    { load ? (<p>Loading...</p>):  ( <table className="table">
    
     <thead className='bg-black text-white'>
       <tr>
@@ -89,7 +113,8 @@ const reset = ()=>{
    
    
     </tbody>
-  </table>
+  </table>)}  
+ 
 </div>
     </div>
   )
