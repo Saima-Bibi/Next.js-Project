@@ -4,6 +4,8 @@ import Link from 'next/link'
 import {useRouter} from 'next/navigation'
 import axios from 'axios'
 import {toast} from 'react-hot-toast'
+import { useDispatch } from 'react-redux'
+import { fetchFeedbacks } from '@/app/reduxToolkit/slice'
 
 export default function Feedback() {
  const[name,setName]= useState('Salma')
@@ -13,6 +15,7 @@ export default function Feedback() {
   feedback:'',
   userId:'686a82245315f301a5d276c6'
  })
+ const dispatch = useDispatch()
  const router = useRouter()
 
  const getData = async() =>{
@@ -47,6 +50,7 @@ export default function Feedback() {
       userId: '686a82245315f301a5d276c6'
     });
      document.getElementById('my_modal_1').close()
+     dispatch(fetchFeedbacks())
   } catch (error) {
     console.error('Failed to submit feedback',error)
   }
@@ -56,7 +60,6 @@ export default function Feedback() {
  useEffect(()=>{
   getData()
  },[])
-
   
   return (
     <>
