@@ -18,12 +18,12 @@ export default function UploadBox() {
 
   return (
     <>
-    <div className="absolute top-1/4 left-1/2 transform -translate-x-1/2 bg-white border-2 border-dashed border-red-700 rounded-2xl w-80 max-w-md h-30 flex flex-col items-center justify-center space-y-3 p-4">
+    <div className="absolute top-[30%] lg:top-1/4 left-1/2 transform -translate-x-1/2 bg-white border-2 border-dashed border-red-700 rounded-2xl w-50 h-25 lg:w-80 max-w-md lg:h-30 flex flex-col items-center justify-center space-y-3 p-4">
       
     
     
      
-        <p className="text-sm text-gray-500 font-medium">{fileName === null  ?  'Select Document Folder To Translate': fileName} </p>
+        <p className="lg:text-sm text:xs text-gray-500 lg:font-medium">{fileName === null  ?  'Select Document Folder To Translate': fileName} </p>
      
         
      
@@ -38,7 +38,7 @@ export default function UploadBox() {
 
       <button
         onClick={handleButtonClick}
-        className="bg-red-600 text-white text-sm px-4 py-1 rounded-xl hover:bg-red-700 transition"
+        className="bg-red-600 text-white  text-xs lg:text-sm  px-2 lg:px-4 py-1  rounded-xl hover:bg-red-700 transition"
       >
         Choose Folder
       </button>
