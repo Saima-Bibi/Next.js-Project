@@ -80,16 +80,17 @@ const reset = ()=>{
       
       </div>
      
-      <div className="overflow-x-auto rounded-box border border-base-content/5 bg-base-100 ">
-    { load ? (<p>Loading...</p>):  ( <table className="table">
+      <div className="overflow-y-auto  h-120  border-none  bg-base-100 ">
+    { load ? (<p>Loading...</p>):  ( <table className="table table-auto h-60 table-md w-[98%] ml-1" >
    
-    <thead className='bg-black text-white'>
+    <thead className='bg-black text-white text-sm font-normal rounded-md'>
       <tr>
         <th></th>
         <th>App</th>
         <th>Feedback</th>
-        <th>User</th>
-        <th>status</th>
+        <th>Username</th>
+         <th>Submitted By</th>
+        <th>Status</th>
         <th>Action</th>
       </tr>
     </thead>
@@ -101,9 +102,10 @@ const reset = ()=>{
         <th>{counter++}</th>
         <td>{feed.appId.name}</td>
         <td>{feed.feedback}</td>
-        <td>{feed.userId.name}</td>
+        <td>{feed.userName}</td>
+        <td>{feed.submittedBy}</td>
          <td>{feed.status}</td>
-         <td>{<button className="btn bg-blue-950 text-white" onClick={()=>updateFeedbacks(feed._id)}
+         <td>{<button className="px-3 py-1 rounded-md bg-blue-950 text-white" onClick={()=>updateFeedbacks(feed._id)}
          disabled={ feed.status === 'Done'}
          >Done</button>}</td>
       </tr>

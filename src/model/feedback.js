@@ -11,8 +11,15 @@ const feedbackSchema =  new mongoose.Schema({
         required:true
     },
     userId:{
-        type: mongoose.Schema.Types.ObjectId,
-        ref:'User',
+        type: String,
+        required:true
+    },
+     userName:{
+        type: String,
+        required:true
+    },
+     submittedBy:{
+        type: String,
         required:true
     },
     status:{

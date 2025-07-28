@@ -2,6 +2,7 @@
 import { usePathname } from "next/navigation"
 import Link from 'next/link'
 import Feedback from "@/components/Feedback"
+import App from "@/components/App"
 
 export default function Layout({ children }) {
   const pathName = usePathname()
@@ -56,6 +57,7 @@ Feedbacks</Link>
         </div>
       </div>
       <Feedback></Feedback>
+      <App></App>
     </>
   )
 }
