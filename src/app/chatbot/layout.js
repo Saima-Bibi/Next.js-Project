@@ -3,7 +3,7 @@ import React from 'react'
 export default function Layout({children}) {
   return (
     <>
-      <div className="drawer lg:drawer-open bg-[#2F2F39]">
+      <div className="drawer drawer-open bg-[#2F2F39]">
   <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
   <div className="drawer-content flex flex-col items-center justify-center">
     {/* Page content here */}
