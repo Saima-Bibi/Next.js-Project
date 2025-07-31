@@ -1,8 +1,17 @@
-import React from 'react'
+import React,{useRef,useEffect} from 'react'
 import ReactMarkdown from 'react-markdown'
 
 export default function Result({ ans }) {
   console.log('ans', ans)
+
+   const endRef = useRef(null);
+
+  useEffect(() => {
+    if (endRef.current) {
+      endRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [ans]);
+
   return (
     <> {Array.isArray(ans) &&
       ans
@@ -17,6 +26,7 @@ export default function Result({ ans }) {
                   <ReactMarkdown>{item.content}</ReactMarkdown>
                 )}              </div>
             </div>
+              {index === ans.length - 1 && <div ref={endRef} />}
           </div>
         ))}
 
