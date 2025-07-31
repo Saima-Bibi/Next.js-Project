@@ -8,12 +8,7 @@ export default function page() {
 
   const API_KEY = process.env.NEXT_PUBLIC_GEMINI_API_KEY
 
-  const [messages, setmessages] = useState([
-    {
-      type: '',
-      content: ''
-    }
-  ])
+  const [messages, setmessages] = useState([])
   const [loading, setLoading] = useState(false)
 
   const [question, setQuestion] = useState('')
@@ -33,6 +28,11 @@ export default function page() {
      return toast.error('Please enter a question')
     }
     console.log('question', question)
+     setmessages(prev => [
+  ...prev,
+  { type: 'chat-end', content: question, loading: false },
+  { type: 'chat-start', content: '' ,loading: true}
+]);
     setLoading(true)
     let response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`,
       {
@@ -50,17 +50,12 @@ export default function page() {
 
     console.log('response', dataString)
     setResult(dataString)
-    setmessages([
-      ...messages,
-      {
-        type: 'chat-end',
-        content: question
-      },
-      {
 
-        type: 'chat-start',
-        content: dataString
-      }])
+   setmessages(prev => {
+    const updated = [...prev];
+    updated[updated.length - 1] = { type: 'chat-start', content: dataString,loading: false };
+    return updated;
+  });
 
     setQuestion('')
   }
@@ -68,15 +63,15 @@ export default function page() {
   return (
     <>
     <div className='h-screen w-full'>
-              <p className=' text-white text-xl p-6 text-center'>Hello! How can I help you...</p>
-
+          { result === ''  && <p className=' text-white text-xl pt-6 text-center'>Hello! How can I help you...</p>
+}
       <div className=" grid grid-rows-5">
 
 
 
 
-        <div className=' row-start-1 row-span-4 h-[430px] w-full overflow-y-auto space-y-2 '>
-          {result && <Result ans={messages} ques={question} />}
+        <div className={` row-start-1 row-span-4 h-[430px] w-full overflow-y-auto space-y-2 ${result ? 'h-[450px] mt-6': ''}`} >
+           <Result ans={messages} ques={question} load={loading}/>
 
         </div>
 
@@ -86,6 +81,7 @@ export default function page() {
 
             <input type="text" placeholder="  Type a message" className='border-none input-md outline-none w-[96%]' value={question} onChange={(e) => {
               setQuestion(e.target.value)
+             
             }} />
             {loading ? (
               <div className="flex justify-center items-center h-full">

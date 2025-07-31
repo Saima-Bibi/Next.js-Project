@@ -1,22 +1,26 @@
 import React from 'react'
+import ReactMarkdown from 'react-markdown'
 
-export default function Result({ans,ques}) {
-    console.log('ans', ans)
+export default function Result({ ans }) {
+  console.log('ans', ans)
   return (
     <> {Array.isArray(ans) &&
-        ans
-        .filter(item => item.content && item.content.trim() !== '')
+      ans
         .map((item, index) => (
-          <div className='max-h-[200px] w-[100%] overflow-y-auto' key={index}>
+
+          <div className=' w-[100%] ' key={index}>
             <div className={`chat  ${item.type}`}>
-              <div className='chat-bubble max-w-[500px] text-white text-xs text-justify bg-[#1D1E22] whitespace-pre-wrap leading-relaxed p-2'>
-                {item.content}
-              </div>
+              <div className='chat-bubble max-w-[500px] text-white text-sm text-justify bg-[#1D1E22] whitespace-pre-wrap leading-relaxed '>
+                {item.loading === true ? (
+                  <span className="loading loading-dots loading-sm text-center text-white"></span>
+                ) : (
+                  <ReactMarkdown>{item.content}</ReactMarkdown>
+                )}              </div>
             </div>
           </div>
         ))}
- {/* <p className={`text-white text-sm h-[50%] ${ans ? 'overflow-scroll' : ''}`}>{ans}</p> */}
-      
+
+
     </>
   )
 }
