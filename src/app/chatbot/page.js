@@ -1,18 +1,27 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useState,useEffect } from 'react'
 import Result from '@/components/Result'
 import toast from 'react-hot-toast'
+import {setmessages, updateMessage,  setResult} from '@/app/reduxToolkit/chatSlice'
+import { useSelector,  useDispatch } from 'react-redux'
 
 
 export default function page() {
 
+  const{messages, result} = useSelector(state => state.chat)
+  console.log('messages from redux', messages)
+  const dispatch = useDispatch()
+
   const API_KEY = process.env.NEXT_PUBLIC_GEMINI_API_KEY
 
-  const [messages, setmessages] = useState([])
+  // const [messages, setmessages] = useState([])
+  const [chatHistory, setChatHistory]= useState([]) 
+  const [activeChatId, setActiveChatId] = useState(null);
+  
   const [loading, setLoading] = useState(false)
 
   const [question, setQuestion] = useState('')
-  const [result, setResult] = useState('')
+  // const [result, setResult] = useState('')
 
   const payload = {
     "contents": [{
@@ -20,7 +29,11 @@ export default function page() {
     }
     ]
   }
-
+useEffect(() => {
+  if (typeof window !== 'undefined') {
+    setChatHistory(JSON.parse(localStorage.getItem('chatHistory') || '[]'));
+  }
+}, []);
 
   const handleSubmit = async () => {
 
@@ -33,6 +46,29 @@ export default function page() {
   { type: 'chat-end', content: question, loading: false },
   { type: 'chat-start', content: '' ,loading: true}
 ]);
+
+dispatch(
+  setmessages( 
+  {
+    type: 'chat-end',
+    content: question,
+    loading: false
+  },
+ 
+)
+);
+
+
+dispatch(
+  setmessages( 
+ 
+  {
+    type: 'chat-start',
+    content: '',
+    loading: true
+  }
+))
+
     setLoading(true)
     let response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`,
       {
@@ -49,17 +85,49 @@ export default function page() {
 
 
     console.log('response', dataString)
-    setResult(dataString)
+    dispatch(setResult(dataString))
 
-   setmessages(prev => {
-    const updated = [...prev];
-    updated[updated.length - 1] = { type: 'chat-start', content: dataString,loading: false };
-    return updated;
-  });
+  //  setmessages(prev => {
+  //   const updated = [...prev];
+  //   updated[updated.length - 1] = { type: 'chat-start', content: dataString,loading: false };
+  //   return updated;
+  // });
+  dispatch(updateMessage(
+ 
+  { type: 'chat-start', content: dataString, loading: false }
+));
+
 
     setQuestion('')
   }
 
+
+ const handleNewChat = () => {
+  if (messages.length > 0) {
+    const prevChats = typeof window !== 'undefined'
+      ? JSON.parse(localStorage.getItem('chatHistory') || '[]')
+      : [];
+    const newHistory = [
+      ...prevChats,
+      { id: Date.now(), messages }
+    ];
+    setChatHistory(newHistory);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('chatHistory', JSON.stringify(newHistory));
+    }
+  }
+  setmessages([]);
+  setResult('');
+  setActiveChatId(null);
+};
+
+  const handleLoadChat = (id)=>{
+ const chat = chatHistory.find(chat => chat.id === id);
+ if(chat){
+  setmessages(chat.messages)
+  setActiveChatId(id)
+ }
+  }
   return (
     <>
     <div className='h-screen w-full'>
