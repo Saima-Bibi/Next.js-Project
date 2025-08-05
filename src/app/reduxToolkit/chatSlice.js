@@ -23,20 +23,39 @@ const chatSlice = createSlice({
     },
     handleNewChat:{
      reducer(state,action){
-     if(action.payload.messages.length > 0 ){
-     state.chatHistory.push(action.payload)}
+
+      const isDuplicate = state.chatHistory.some(
+    chat => JSON.stringify(chat.messages) === JSON.stringify(action.payload.messages)
+  );
+     if(action.payload.messages.length > 0 && !isDuplicate){
+
+     state.chatHistory.push(action.payload)
+    }
      state.messages = []
      state.result = ''
      action.activeChatId = null
      },
      prepare(messages){
+       const firstUserMessage = messages.find(m => m.type === 'chat-end')?.content || 'Prev Chat';
       return{
         payload:{
           id: Date.now(),
+          title: firstUserMessage.length > 30 
+        ? firstUserMessage.slice(0, 30) + '...' 
+        : firstUserMessage,
           messages
         }
       }
      }
+    },
+    handleLoadChat:(state,action)=>{
+     state.messages = []
+    const chat = JSON.parse(JSON.stringify(state.chatHistory)).find(chat=> chat.id === action.payload)
+    console.log('chat',chat.messages)
+    if(chat){
+      state.messages.push(...chat.messages)
+      state.activeChatId = chat.id
+    }
     }
   
     
@@ -44,7 +63,7 @@ const chatSlice = createSlice({
 });
 
 export const {
-  setmessages, updateMessage,  setResult, handleNewChat
+  setmessages, updateMessage,  setResult, handleNewChat, handleLoadChat
 } = chatSlice.actions;
 
 export default chatSlice.reducer;

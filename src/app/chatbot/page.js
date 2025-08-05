@@ -70,7 +70,8 @@ dispatch(
 ))
 
     setLoading(true)
-    let response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`,
+    try {
+       let response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`,
       {
         method: "POST",
         body: JSON.stringify(payload)
@@ -79,6 +80,7 @@ dispatch(
     )
     response = await response.json()
     setLoading(false)
+    console.log('response', response)
     let dataString = response.candidates[0].content.parts[0].text
     //  dataString = dataString.split('* ')
     // // dataString = dataString.map((item)=> item.trim())
@@ -99,35 +101,14 @@ dispatch(
 
 
     setQuestion('')
-  }
-
-
- const handleNewChat = () => {
-  if (messages.length > 0) {
-    const prevChats = typeof window !== 'undefined'
-      ? JSON.parse(localStorage.getItem('chatHistory') || '[]')
-      : [];
-    const newHistory = [
-      ...prevChats,
-      { id: Date.now(), messages }
-    ];
-    setChatHistory(newHistory);
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('chatHistory', JSON.stringify(newHistory));
+    } catch (error) {
+      console.log(error)
     }
+   
   }
-  setmessages([]);
-  setResult('');
-  setActiveChatId(null);
-};
 
-  const handleLoadChat = (id)=>{
- const chat = chatHistory.find(chat => chat.id === id);
- if(chat){
-  setmessages(chat.messages)
-  setActiveChatId(id)
- }
-  }
+
+
   return (
     <>
     <div className='h-screen w-full'>
