@@ -3,6 +3,7 @@ import React,{useState,useEffect} from 'react'
 import {handleNewChat, handleLoadChat} from '@/app/reduxToolkit/chatSlice'
 import Link from 'next/link'
 import { useDispatch, useSelector } from 'react-redux'
+import Image from 'next/image'
 
 
 export default function Layout({children}) {
@@ -65,7 +66,8 @@ New Chat</Link>
 <li className=' absolute h-full flex flex-col bottom-2 justify-end'>
       <div className="avatar ">
   <div className="w-10 rounded-full">
-    <img src="https://img.daisyui.com/images/profile/demo/yellingcat@192.webp" />
+   
+    <Image src="https://img.daisyui.com/images/profile/demo/yellingcat@192.webp" alt="profile" width={200} height={100} />
   </div>
    <p className='text-white text-sm'>Saima Bibi</p>
 </div>

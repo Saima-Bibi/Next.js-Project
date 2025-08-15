@@ -6,7 +6,7 @@ import {setmessages, updateMessage,  setResult} from '@/app/reduxToolkit/chatSli
 import { useSelector,  useDispatch } from 'react-redux'
 
 
-export default function page() {
+export default function Page() {
 
   const{messages, result} = useSelector(state => state.chat)
   console.log('messages from redux', messages)
