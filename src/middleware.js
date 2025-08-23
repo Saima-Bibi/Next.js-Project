@@ -1,30 +1,46 @@
 import { NextResponse } from "next/server";
+import { jwtVerify } from "jose";
+ 
 
-export  function middleware(req){
+export async function middleware(req){
   const isLoggedIn = true
 //   if(!isLoggedIn && req.nextUrl.pathname !== '/login'){
 //     return NextResponse.redirect(new URL('/login',req.url))
 //   }
 
 
-const token = localStorage.getItem("token");
-
+const token =  req.cookies.get('token')?.value
+ console.log('token',token)
   if (!token) {
-    NextResponse.redirect(new URL('/login',req.url))
-    return NextResponse.json({ error: "No token provided" }, { status: 401 });
+    console.log('no token found')
+   return NextResponse.redirect(new URL('/login',req.url))
+ 
   }
 
   try {
-      localStorage.setItem("token", token);
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      
+    const secret = new TextEncoder().encode(process.env.JWT_SECRET);
+    const { payload } = await jwtVerify(token, secret);
+    console.log('payload',payload)
 
-  localStorage.setItem("decoded token", decoded);
+  if (payload.role === "admin" && req.nextUrl.pathname === "/login") {
+      return NextResponse.redirect(new URL("/admin", req.url));
+    }
+
+    if (payload.role === "user" && req.nextUrl.pathname === "/login") {
+      return NextResponse.redirect(new URL("/chatbot", req.url));
+    }
+
+    
+    return NextResponse.next();
+
    
   } catch (err) {
-    return NextResponse.json({ error: "Invalid token" }, { status: 403 });
+     console.log('Invalid token')
+       return NextResponse.redirect(new URL('/login',req.url))
   }
     //  return NextResponse.redirect(new URL('/login',req.url))
 }
 export const config = {
-    matcher:'/ssg:path*'
+    matcher:["/login",'/admin/:path*', '/chatbot/:path*']
 }

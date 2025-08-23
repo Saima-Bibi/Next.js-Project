@@ -41,7 +41,9 @@ if(type === 'login'){
       process.env.JWT_SECRET,  
       { expiresIn: "10d" }
     );
-      return NextResponse.json({ message: 'Logged in successfully',token })
+      const response= NextResponse.json({ message: 'Logged in successfully',token })
+      response.cookies.set('token',token,{httpOnly:true,secure:true,sameSite:'strict',maxAge:10*24*60*60})
+      return response
 }
 
 
