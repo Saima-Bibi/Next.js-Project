@@ -4,9 +4,11 @@ import React,{useState, useEffect} from 'react'
 import toast from 'react-hot-toast'
 import { useSelector, useDispatch } from "react-redux";
 import {fetchUsers} from '@/app/reduxToolkit/userSlice'
+import { getCookie } from "cookies-next";
 
 
 export default function Admin() {
+
 
 const [data,setData] = useState({
   name:'',
@@ -14,7 +16,7 @@ const [data,setData] = useState({
   role:''
 })
 let counter = 1
-
+ const [counts, setCounts] = useState({}); 
 
 const users = useSelector((state) => state?.users?.data)
 const dispatch = useDispatch()
@@ -59,8 +61,35 @@ const handleSubmit = async (e) => {
 
   }
 
+ const [user, setUser] = useState(null);
+    useEffect(() => {
+    axios.get("/api/chatbot?type=getLoggedInUser")
+      .then(data => setUser(data.data.user));
+  }, []);
+
+
+   useEffect(() => {
+    if (users?.length > 0) {
+      users.forEach(async (u) => {
+        try {
+          const res = await axios.post("/api/chatbot?type=getCount", { id: u._id });
+          setCounts(prev => ({
+            ...prev,
+            [u._id]: {
+              messages: res?.data?.messageCount,
+              chats: res?.data?.chatCount
+            }
+          }));
+        } catch (err) {
+          console.error("Error fetching counts", err);
+        }
+      });
+    }
+  }, [users]);
+
   return (
     <>
+    <p>Admin: {user? user.name: ''}</p>
   <div className = ' flex flex-row justify-end'>
 <button className="btn bg-blue-950 
  text-white m-3" onClick={()=>document.getElementById('my_modal_5').showModal()}>
@@ -109,6 +138,8 @@ const handleSubmit = async (e) => {
         <th></th>
         <th>Name</th>
         <th>Role</th>
+        <th>Message Count</th>
+        <th>Chat Count</th>
        
       </tr>
     </thead>
@@ -118,7 +149,8 @@ const handleSubmit = async (e) => {
         <th>{counter++}</th>
         <td>{item.name}</td>
         <td>{item.role}</td>
-       
+        <td>{counts[item._id]?.messages ?? "..."}</td>
+        <td>{counts[item._id]?.chats ?? "..."}</td>
       </tr>
      ))
       }

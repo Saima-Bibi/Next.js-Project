@@ -1,9 +1,10 @@
 'use client'
 import React,{useState,useEffect} from 'react'
-import {handleNewChat, handleLoadChat} from '@/app/reduxToolkit/chatSlice'
+import {handleNewChat, handleLoadChat, fetchChats} from '@/app/reduxToolkit/chatSlice'
 import Link from 'next/link'
 import { useDispatch, useSelector } from 'react-redux'
 import Image from 'next/image'
+import axios from 'axios'
 
 
 export default function Layout({children}) {
@@ -14,12 +15,38 @@ export default function Layout({children}) {
 
     const [selectedChatId, setSelectedChatId] = useState(null)
 
-  useEffect(() => {
-    if (selectedChatId) {
-      dispatch(handleLoadChat(selectedChatId))
-      setSelectedChatId(null) 
+const [user, setUser] = useState(null);
+     useEffect(() => {
+        const getUser = async()=>{
+     const res= await axios.get("/api/chatbot?type=getLoggedInUser")
+     console.log(res,'ress')
+      
+        setUser(res.data?.user)
+        const id = res.data?.user?.userId
+     console.log('B id',id)
+    if (res) {
+       
+      console.log('id',id)
+        dispatch(fetchChats(id))
+      
     }
-  }, [selectedChatId, dispatch])
+       
+       }
+     getUser()
+    }, []);
+
+  // useEffect(() => {
+
+  //   console.log('user', user)
+  //   const id = user?.userId
+  //   console.log('B id',id)
+  //   if (user) {
+       
+  //     console.log('id',id)
+  //       dispatch(fetchChats(id))
+      
+  //   }
+  // }, [ user])
 
     const [startNewChat, setStartNewChat] = useState(false)
 
@@ -57,7 +84,7 @@ New Chat</Link>
 
 <ul>
       {chatHistory ? chatHistory.map((item)=>( 
-          <li key={item.id}  className={`hover:bg-[#2F2F39]  ${activeChatId === item.id ? 'bg-[#2F2F39]': ''} rounded-sm hover:cursor-pointer`}><Link href={'/chatbot'} onClick={()=> setSelectedChatId(item.id)}> {item.messages?.[0]?.content || item.title  }</Link></li>
+          <li key={item._id}  className={`hover:bg-[#2F2F39]  ${activeChatId === item._id ? 'bg-[#2F2F39]': ''} rounded-sm text-xs hover:cursor-pointer`}><Link href={'/chatbot'} onClick={()=> { dispatch(handleLoadChat(item._id))}}> { item?.title  }</Link></li>
        )):('no chat found')}
      </ul>  
       
@@ -69,7 +96,7 @@ New Chat</Link>
    
     <Image src="https://img.daisyui.com/images/profile/demo/yellingcat@192.webp" alt="profile" width={200} height={100} />
   </div>
-   <p className='text-white text-sm'>Saima Bibi</p>
+   <p className='text-white text-sm'>{user ? user.name: ''}</p>
 </div>
 </li>
 

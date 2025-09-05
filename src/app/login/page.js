@@ -4,6 +4,7 @@ import React,{useState} from 'react';
 import Image from 'next/image'
 import img from '/public/next.svg'
 import axios from 'axios';
+import toast from 'react-hot-toast';
 
 
 function Login() {

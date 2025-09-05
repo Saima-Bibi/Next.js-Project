@@ -12,13 +12,16 @@ export async function middleware(req){
 const token =  req.cookies.get('token')?.value
  console.log('token',token)
   if (!token) {
+    if (req.nextUrl.pathname === "/login") {
+      return NextResponse.next();
+    }
     console.log('no token found')
    return NextResponse.redirect(new URL('/login',req.url))
  
   }
 
   try {
-      
+    if(token){ 
     const secret = new TextEncoder().encode(process.env.JWT_SECRET);
     const { payload } = await jwtVerify(token, secret);
     console.log('payload',payload)
@@ -31,9 +34,12 @@ const token =  req.cookies.get('token')?.value
       return NextResponse.redirect(new URL("/chatbot", req.url));
     }
 
-    
-    return NextResponse.next();
+   const res = NextResponse.next();
+      res.cookies.set("LoggedInUser", JSON.stringify(payload), { httpOnly: false });
+      
+      return res;
 
+}
    
   } catch (err) {
      console.log('Invalid token')

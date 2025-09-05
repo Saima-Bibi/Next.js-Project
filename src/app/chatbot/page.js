@@ -2,22 +2,24 @@
 import React, { useState,useEffect } from 'react'
 import Result from '@/components/Result'
 import toast from 'react-hot-toast'
-import {setmessages, updateMessage,  setResult} from '@/app/reduxToolkit/chatSlice'
+import {setMessages, updateMessage,  setResult, fetchChats, setChatTitle} from '@/app/reduxToolkit/chatSlice'
 import { useSelector,  useDispatch } from 'react-redux'
+import axios from 'axios'
 
 
 export default function Page() {
 
-  const{messages, result} = useSelector(state => state.chat)
+  const{messages, result, chatTitle} = useSelector(state => state.chat)
   console.log('messages from redux', messages)
   const dispatch = useDispatch()
 
   const API_KEY = process.env.NEXT_PUBLIC_GEMINI_API_KEY
 
   // const [messages, setmessages] = useState([])
-  const [chatHistory, setChatHistory]= useState([]) 
-  const [activeChatId, setActiveChatId] = useState(null);
+
   
+   const [user, setUser] = useState(null);
+//  const [chatTitle, setChatTitle] = useState(null);
   const [loading, setLoading] = useState(false)
 
   const [question, setQuestion] = useState('')
@@ -29,48 +31,88 @@ export default function Page() {
     }
     ]
   }
-useEffect(() => {
-  if (typeof window !== 'undefined') {
-    setChatHistory(JSON.parse(localStorage.getItem('chatHistory') || '[]'));
-  }
-}, []);
+
+     useEffect(() => {
+        const getUser = async()=>{
+     const res= await axios.get("/api/chatbot?type=getLoggedInUser")
+     console.log(res,'ress')
+      
+        setUser(res.data?.user)
+       
+       
+       }
+     getUser()
+    }, []);
+
+// useEffect(() => {
+//   if (typeof window !== 'undefined') {
+//     setChatHistory(JSON.parse(localStorage.getItem('chatHistory') || '[]'));
+   
+//   }
+// }, []);
+
 
   const handleSubmit = async () => {
 
     if(question === ''){
      return toast.error('Please enter a question')
     }
+if ( !chatTitle && messages.length === 0 ) {
+  
+  dispatch(setChatTitle(question))
+}
+
+
+
+
+     const userMessage = {  
+    userId: user && user?.userId, 
+    sender: 'user', 
+    content: question, 
+    title: chatTitle || question 
+  };
+
+    
+
     console.log('question', question)
-     setmessages(prev => [
-  ...prev,
-  { type: 'chat-end', content: question, loading: false },
-  { type: 'chat-start', content: '' ,loading: true}
-]);
+//      setmessages(prev => [
+//   ...prev,
+//   { type: 'chat-end', content: question, loading: false },
+//   { type: 'chat-start', content: '' ,loading: true}
+// ]);
 
-dispatch(
-  setmessages( 
-  {
-    type: 'chat-end',
-    content: question,
-    loading: false
-  },
+ const res = await axios.post("/api/chatbot?type=sendMessage",userMessage)
+console.log('res from db', res)
+if(res){
+  const msg = res?.data?.newMessage
+dispatch(setMessages(msg))
+}
+
+// dispatch(
+//   setmessages( 
+//   {
+//     type: 'chat-end',
+//     content: question,
+//     loading: false
+//   },
  
-)
-);
+// )
+// );
 
 
-dispatch(
-  setmessages( 
+// dispatch(
+//   setmessages( 
  
-  {
-    type: 'chat-start',
-    content: '',
-    loading: true
-  }
-))
+//   {
+//     type: 'chat-start',
+//     content: '',
+//     loading: true
+//   }
+// ))
 
-    setLoading(true)
+   
     try {
+       dispatch(setMessages({sender:'bot',content:'', loading:true}))
        let response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`,
       {
         method: "POST",
@@ -79,7 +121,7 @@ dispatch(
       }
     )
     response = await response.json()
-    setLoading(false)
+   
     console.log('response', response)
     let dataString = response.candidates[0].content.parts[0].text
     //  dataString = dataString.split('* ')
@@ -88,19 +130,38 @@ dispatch(
 
     console.log('response', dataString)
     dispatch(setResult(dataString))
+ 
+
+
 
   //  setmessages(prev => {
   //   const updated = [...prev];
   //   updated[updated.length - 1] = { type: 'chat-start', content: dataString,loading: false };
   //   return updated;
   // });
-  dispatch(updateMessage(
+//   dispatch(updateMessage(
  
-  { type: 'chat-start', content: dataString, loading: false }
-));
+//   { type: 'chat-start', content: dataString, loading: false }
+// ));
 
 
+
+ const botMessage = {  
+      userId: user && user?.userId, 
+      sender: 'bot', 
+      content: dataString, 
+      title: chatTitle || question 
+    };
+
+ const botRes = await axios.post("/api/chatbot?type=sendMessage",botMessage)
+ console.log('botRes from db', botRes)
+    if(botRes){
+  const msg = botRes?.data?.newMessage
+      dispatch(updateMessage(msg));
+}
     setQuestion('')
+
+    dispatch(fetchChats( user && user?.userId))
     } catch (error) {
       console.log(error)
     }
@@ -112,7 +173,7 @@ dispatch(
   return (
     <>
     <div className='h-screen w-full'>
-          { result === ''  && <p className=' text-white text-xl pt-6 text-center'>Hello! How can I help you...</p>
+          { result === ''  && (<p className=' text-white text-xl pt-6 text-center'>Hello! How can I help, {user? user.name : " "} ?</p>)
 }
       <div className=" grid grid-rows-5">
 
