@@ -1,0 +1,6 @@
+node_modules
+npm-debug.log
+.next
+docker-compose.yml
+Dockerfile
+mongo-data

@@ -26,13 +26,10 @@ const token =  req.cookies.get('token')?.value
     const { payload } = await jwtVerify(token, secret);
     console.log('payload',payload)
 
-  if (payload.role === "admin" && req.nextUrl.pathname === "/login") {
-      return NextResponse.redirect(new URL("/admin", req.url));
-    }
-
-    if (payload.role === "user" && req.nextUrl.pathname === "/login") {
-      return NextResponse.redirect(new URL("/chatbot", req.url));
-    }
+ if (req.nextUrl.pathname === "/login") {
+  if (payload.role === "admin") return NextResponse.redirect(new URL("/admin", req.url));
+  if (payload.role === "user") return NextResponse.redirect(new URL("/chatbot", req.url));
+}
 
    const res = NextResponse.next();
       res.cookies.set("LoggedInUser", JSON.stringify(payload), { httpOnly: false });

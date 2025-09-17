@@ -34,8 +34,8 @@ function Login() {
         }
         const res = await axios.post('/api/chatbot?type=login', data);
 console.log('res',res)
-        if(data.token){
-        localStorage.setItem("token", token);
+        if(res){
+        
         toast.success(res?.data?.message)
         setData({
           name: '',
@@ -43,13 +43,15 @@ console.log('res',res)
         
          
         });
+        window.location.href = "/login";
+
         }
   
         
      
         
       } catch (error) {
-        console.error('Failed to submit feedback', error)
+        console.error('Failed to login', error)
       }
   
     }

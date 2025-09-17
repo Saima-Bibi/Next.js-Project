@@ -1,4 +1,4 @@
-import UploadBox from '@/components/uploadBox'
+import UploadBox from '@/components/UploadBox'
 import React from 'react'
 
 export default function page() {

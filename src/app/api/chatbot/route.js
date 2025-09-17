@@ -8,7 +8,7 @@ import conversationModel from "@/model/conversation"
 import messageModel from "@/model/message"
 
 export async function POST(req) {
-  dbConnection()
+ await dbConnection()
 
   const { searchParams } = new URL(req.url)
   const type = searchParams.get('type')
@@ -28,7 +28,7 @@ export async function POST(req) {
 
     const user = await userModel.findOne({ name });
     if (!user) {
-      return NextResponse.json({ message: 'new user created successfully' }, { status: 404 })
+      return NextResponse.json({ message: 'user not found' }, { status: 404 })
 
     }
 
@@ -64,7 +64,7 @@ export async function POST(req) {
      
     } else{
 
-      const conversation = await conversationModel.create({
+       conversation = await conversationModel.create({
       userId,
       title,
       messages: [newMessage._id]
