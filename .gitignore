@@ -39,3 +39,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+# Ignore database and archive files
+mongo-data/
+*.tar
+*.zip
+*.bak
+*.log
